@@ -4,8 +4,6 @@ version: 3.1.0
 description: Hostile red-team failure analysis for software systems, architectures, and AI agents. Your canary in the coal mine — assume production failure within 3-6 months and reconstruct the causal chain. Covers architecture, runtime behavior, security, scalability, AI/Agent behavior, integrations, DevOps, and human/process factors.
 ---
 
-![AnthraCanary Cover](https://raw.githubusercontent.com/rafa57600/anthracanary/main/images/cover.png)
-
 # AnthraCanary — Engineering Pre-Mortem
 
 > Your canary in the coal mine. Assume system failure within 3-6 months and reconstruct the causal chain backward.
