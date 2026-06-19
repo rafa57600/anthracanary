@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Preflight Declaration",
+  "type": "object",
+  "required": [
+    "target_system",
+    "estimated_file_count",
+    "size_tier",
+    "max_risks",
+    "files_to_read",
+    "python_available"
+  ],
+  "properties": {
+    "target_system": { "type": "string" },
+    "estimated_file_count": { "type": "integer", "minimum": 0 },
+    "size_tier": { "type": "string", "enum": ["S", "M", "L", "XL"] },
+    "max_risks": { "type": "integer", "minimum": 0 },
+    "files_to_read": { "type": "array", "items": { "type": "string" } },
+    "python_available": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

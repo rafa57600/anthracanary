@@ -1,0 +1,114 @@
+{
+  "risks": [
+    {
+      "id": "ARCH-001",
+      "title": "SKILL.md is a single point of truth with no fallback",
+      "probability": 3,
+      "impact": 5,
+      "detectability": 4,
+      "category": "architecture",
+      "description": "The entire skill is a single SKILL.md file. If it fails to load, gets corrupted, or an agent misinterprets it, there is no secondary source, no validation layer, and no degraded-mode fallback. Discovery metadata (openai.yaml) and references exist but are only reachable THROUGH SKILL.md's instructions.",
+      "warning_signals": ["SKILL.md parse error reported by agent", "Relative reference links fail to resolve"],
+      "mitigations": ["Embed critical workflow summary in openai.yaml default_prompt as a fallback", "Add integrity check to each reference file that validates it's being loaded correctly"]
+    },
+    {
+      "id": "AI-001",
+      "title": "Hallucination propagation poisons the entire pre-mortem",
+      "probability": 4,
+      "impact": 5,
+      "detectability": 5,
+      "category": "ai_agent",
+      "description": "The skill instructs the agent to 'read the codebase for concrete details' and then produce a 7-section report. If the agent hallucinates a system component, failure mode, or architecture detail, that hallucination propagates through scoring, root cause analysis, and kill criteria — the entire pre-mortem becomes confidently wrong, and the user has no way to detect the fabrication without re-validating every claim.",
+      "warning_signals": ["Agent references files or components that don't exist", "Report contains plausible-sounding but generic failure chains"],
+      "mitigations": ["Add a 'sources cited' section requiring file paths and line numbers for every claim", "Add a pre-flight validation step: agent must list files it read before generating output"]
+    },
+    {
+      "id": "AI-002",
+      "title": "No output guardrails on the pre-mortem report structure",
+      "probability": 5,
+      "impact": 3,
+      "detectability": 2,
+      "category": "ai_agent",
+      "description": "The output_template.md defines a 7-section structure with formatting guidance, but there is no schema validation, no checklist enforcement, and no automated quality gate. Agents will skip sections (especially kill criteria — which the template itself calls 'the most commonly skipped'). The report format degrades over time as different agents make different interpretation choices.",
+      "warning_signals": ["Reports missing kill criteria section", "Risk scores are hand-calculated instead of using risk_scorer.py", "Inconsistent formatting across reports"],
+      "mitigations": ["Add a JSON schema for the pre-mortem report that the agent can validate against", "Add a required checklist at the end of SKILL.md: agent must confirm all 7 sections present"]
+    },
+    {
+      "id": "ARCH-002",
+      "title": "Synchronous coupling between SKILL.md and reference files",
+      "probability": 2,
+      "impact": 4,
+      "detectability": 3,
+      "category": "architecture",
+      "description": "All three reference files and the risk_scorer.py script are linked via relative paths from SKILL.md. If the skill is forked, moved, or restructured (e.g., references/ becomes a different name), every link breaks silently. References are also coupled to SKILL.md's content — updating the taxonomy requires editing two files.",
+      "warning_signals": ["Broken image/link in agent output", "Agent reports 'reference file not found'"],
+      "mitigations": ["Define a stable contract: reference files must have documented interfaces so SKILL.md only needs to reference the contract, not file paths"]
+    },
+    {
+      "id": "SCALE-001",
+      "title": "Single-instance architecture cannot handle concurrent analyses",
+      "probability": 3,
+      "impact": 2,
+      "detectability": 1,
+      "category": "scalability",
+      "description": "The skill is a flat file structure with no session isolation. If multiple analyses are requested on different systems concurrently (e.g., two agents running pre-mortems in parallel), there is no mechanism to separate state, results, or context. Risk data, intermediate JSON, and outputs collide in the same directory.",
+      "warning_signals": ["Two pre-mortem sessions overwrite each other's risks.json"],
+      "mitigations": ["Document a convention: each session should create a timestamped subdirectory for its artifacts", "Rename risks.json to include a session ID or timestamp"]
+    },
+    {
+      "id": "RUNT-001",
+      "title": "Unbounded analysis depth per coverage area",
+      "probability": 4,
+      "impact": 3,
+      "detectability": 2,
+      "category": "runtime",
+      "description": "SKILL.md instructs agents to 'identify at least 2-3 specific risks' per area but sets no upper bound and no budget for total analysis depth. An overly thorough agent could spend 20+ risks per area across 8 areas = 160+ risks, overflowing context windows and burning tokens. The risk_scorer.py handles any number of risks gracefully, but the total output becomes unmanageable.",
+      "warning_signals": ["Pre-mortem report exceeds 100+ risk entries", "Agent spends more time analyzing than the user's system itself"],
+      "mitigations": ["Add a hard limit: maximum 5 risks per area, 30 risks total", "Add a 'triage mode' flag that limits to critical risks only"]
+    },
+    {
+      "id": "INT-001",
+      "title": "risk_scorer.py is a hard runtime dependency with no fallback",
+      "probability": 3,
+      "impact": 4,
+      "detectability": 3,
+      "category": "integration",
+      "description": "The scoring workflow depends on Python 3 and risk_scorer.py executing correctly. If Python is unavailable, the script has a syntax/runtime error, JSON is malformed, or encoding fails (as seen on Windows cp1252), the scoring step blocks completely. The SKILL.md has no documented manual fallback for scoring risks without the script.",
+      "warning_signals": ["Python not found in PATH", "Script raises exception (encoding, JSON parse)", "Agent reports 'risk_scorer.py failed'"],
+      "mitigations": ["Document the manual P x I x D scoring formula directly in SKILL.md as a fallback", "Add encoding detection to risk_scorer.py (utf-8 fallback for cp1252 environments)", "Test the script in the target environment before running"]
+    },
+    {
+      "id": "OPS-001",
+      "title": "No observability into pre-mortem quality or completeness",
+      "probability": 4,
+      "impact": 4,
+      "detectability": 4,
+      "category": "devops",
+      "description": "There is no mechanism to measure whether a pre-mortem was thorough, accurate, or complete. No coverage metrics (did the agent actually check all 8 areas?), no accuracy validation (were identified risks real or hallucinated?), no feedback loop (were past pre-mortems useful?). The taxonomy and reference files never improve based on actual usage.",
+      "warning_signals": ["Same risks identified in every pre-mortem (taxonomy not differentiating)", "Users stop requesting pre-mortems", "User corrects or dismisses identified risks"],
+      "mitigations": ["Add a retrospective step to the workflow: compare identified risks against actual incidents", "Version the taxonomy and track additions as learnings"]
+    },
+    {
+      "id": "HUMAN-001",
+      "title": "Knowledge silo — design rationale exists only in the creator's mind",
+      "probability": 3,
+      "impact": 3,
+      "detectability": 4,
+      "category": "human_process",
+      "description": "The skill's design decisions (why certain thresholds, why category weights, why these specific 50+ failure modes) are not documented anywhere — they exist only in the conversation history that created this skill. Future maintainers cannot distinguish intentional design from arbitrary choices, making it risky to modify the taxonomy or scoring model.",
+      "warning_signals": ["Maintainer changes a threshold and breaks scoring balance", "New failure modes added that duplicate or contradict existing ones"],
+      "mitigations": ["Add a DESIGN_DECISIONS.md reference file documenting the rationale for thresholds, weights, and each failure mode category"]
+    },
+    {
+      "id": "PROC-001",
+      "title": "No version pinning or change management for the skill",
+      "probability": 2,
+      "impact": 4,
+      "detectability": 5,
+      "category": "human_process",
+      "description": "The skill exists as files in `.anthracode/skill/` with no versioning convention. Edits are immediate and silent — an agent using the skill has no way to know if the taxonomy was updated, thresholds changed, or mitigations were added mid-session. No changelog, no semver, no migration guide.",
+      "warning_signals": ["Two agents report different scores for identical risks", "Skill behavior changes without explicit update notice"],
+      "mitigations": ["Add a version field to SKILL.md frontmatter", "Document a changelog convention under a CHANGELOG section in the skill"]
+    }
+  ]
+}

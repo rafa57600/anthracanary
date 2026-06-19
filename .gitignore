@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Session output (created at analysis time)
+sessions/
+
+# OS
+.DS_Store
+Thumbs.db
