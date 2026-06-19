@@ -3,6 +3,7 @@
 # AnthraCanary 🐦
 
 [![skills.sh](https://skills.sh/b/rafa57600/anthracanary)](https://skills.sh/rafa57600/anthracanary)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Hostile red-team failure analysis for software systems.** Your canary in the coal mine — assume production failure within 3-6 months and reconstruct the causal chain backward.
 
@@ -10,15 +11,27 @@ AnthraCanary systematically analyzes your codebase across 8 failure dimensions (
 
 ## Installation
 
-### Via the skill-installer (recommended)
+### Via npx skills (recommended)
+
+```bash
+npx skills add rafa57600/anthracanary
+```
+
+### As a Claude Code plugin
+
+```bash
+/plugin install rafa57600/anthracanary
+```
+
+### Via the skill-installer
 
 ```bash
 python scripts/install-skill-from-github.py --repo rafa57600/anthracanary
 ```
 
-### Manual installation
+### Manual
 
-Clone the repo and copy the skill to your skills directory:
+Clone the repo and copy the skill to your agent's skills directory:
 
 ```bash
 git clone https://github.com/rafa57600/anthracanary.git

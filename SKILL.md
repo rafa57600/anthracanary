@@ -2,6 +2,7 @@
 name: anthracanary
 version: 3.1.0
 description: Hostile red-team failure analysis for software systems, architectures, and AI agents. Your canary in the coal mine — assume production failure within 3-6 months and reconstruct the causal chain. Covers architecture, runtime behavior, security, scalability, AI/Agent behavior, integrations, DevOps, and human/process factors.
+keywords: pre-mortem, failure-analysis, red-team, risk-scoring, architecture-review, security-audit, code-review, production-readiness
 ---
 
 # AnthraCanary — Engineering Pre-Mortem
@@ -429,7 +430,7 @@ This skill follows **semantic versioning** (frontmatter `version` field):
 | **MINOR** | New failure modes, new reference files, new optional steps | v3.0.0 → v3.1.0 |
 | **PATCH** | Clarifications, typo fixes, non-functional edits to existing files | v3.0.0 → v3.0.1 |
 
-**Version pinning**: Users can request `engineering-premortem@<version>` to
+**Version pinning**: Users can request `anthracanary@<version>` to
 lock to a specific version. The current version is always `@latest`. Prior
 major versions are archived under `archive/v<major>/` relative to this file.
 
