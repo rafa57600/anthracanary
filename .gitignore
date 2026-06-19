@@ -9,3 +9,6 @@ sessions/
 # OS
 .DS_Store
 Thumbs.db
+
+# Marketing / localized guides (one-off, not core skill)
+anthracanary-ar.md
