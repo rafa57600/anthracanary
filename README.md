@@ -1,3 +1,5 @@
+![AnthraCanary Cover](https://raw.githubusercontent.com/rafa57600/anthracanary/main/images/cover.png)
+
 # AnthraCanary 🐦
 
 [![skills.sh](https://skills.sh/b/rafa57600/anthracanary)](https://skills.sh/rafa57600/anthracanary)
@@ -52,6 +54,8 @@ AnthraCanary will:
 ```
 anthracanary/
 ├── SKILL.md                  # Main skill definition and workflow
+├── images/
+│   └── cover.png             # Cover image for README / skills.sh
 ├── scripts/
 │   └── risk_scorer.py        # Automated risk scoring engine
 ├── references/
