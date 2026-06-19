@@ -1,0 +1,29 @@
+{
+  "name": "anthracanary",
+  "description": "Hostile red-team failure analysis for software systems, architectures, and AI agents. Your canary in the coal mine — assume production failure within 3-6 months and reconstruct the causal chain backward.",
+  "version": "3.1.0",
+  "author": {
+    "name": "Rafa",
+    "url": "https://github.com/rafa57600"
+  },
+  "repository": "https://github.com/rafa57600/anthracanary",
+  "license": "MIT",
+  "keywords": [
+    "pre-mortem",
+    "failure-analysis",
+    "red-team",
+    "risk-scoring",
+    "architecture-review",
+    "security-audit"
+  ],
+  "skills": [
+    "./SKILL.md",
+    "./scripts/risk_scorer.py",
+    "./references/failure_taxonomy.md",
+    "./references/risk_model.md",
+    "./references/output_template.md",
+    "./references/preflight_schema.json",
+    "./references/DESIGN_DECISIONS.md",
+    "./agents/openai.yaml"
+  ]
+}

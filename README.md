@@ -54,6 +54,9 @@ AnthraCanary will:
 ```
 anthracanary/
 ├── SKILL.md                  # Main skill definition and workflow
+├── skills.sh.json            # skills.sh directory manifest
+├── .claude-plugin/
+│   └── plugin.json           # Claude Code plugin manifest
 ├── images/
 │   └── cover.png             # Cover image for README / skills.sh
 ├── scripts/
