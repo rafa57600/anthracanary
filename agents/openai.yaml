@@ -1,5 +1,5 @@
 interface:
-  display_name: "Canary — Engineering Pre-Mortem"
+  display_name: "AnthraCanary — Engineering Pre-Mortem"
   short_description: "Red-team failure analysis: assume failure, find root causes"
   default_prompt: "Run an engineering pre-mortem on the current system to identify systemic failure risks using hostile red-team analysis."
 
